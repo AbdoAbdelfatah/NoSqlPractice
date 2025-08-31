@@ -1,0 +1,132 @@
+1-db["instructor"].find()
+
+2-db.instructor.find(
+  { salary: { $gte: 4000 } },
+  { firstName: 1, salary: 1, _id: 0 }
+);
+
+3-db.instructor.find(
+  { age: { $lte: 25 } }, 
+);
+
+
+4-db.instructor.find(
+  {
+    $and: [
+      { "address.city": "mansoura" },
+      {
+        $or: [
+          { "address.street": 10 },
+          { "address.street": 14 }
+        ]
+      }
+    ]
+  },
+  { firstName: 1, address: 1, salary: 1, _id: 0 }
+);
+
+
+5- db.instructor.find(
+  { courses: { $all: ["js", "jquery"] } }
+);
+
+
+6-db.instructor.find(
+  {},
+  { firstname: 1, courses: 1, _id: 0 }
+).forEach(doc => {
+  print("Name: " + doc.firstname + ", Number of Courses: " + doc.courses.length);
+});
+
+
+7-db.instructor.find(
+  { firstName: { $exists: true }, lastName: { $exists: true } },  
+  { _id: 0 }  
+).sort(
+  { firstName: 1, lastName: -1 }  
+).forEach(el => {               
+    print("FullName: "+el.firstName + " " + el.lastName
+    +", age: "+el .age)
+ 
+});
+
+7Bonus- db.instructor.find(
+  { firstName: { $exists: true }, lastName: { $exists: true } },
+  { _id: 0, firstName: 1, lastName: 1, age: 1 }
+)
+.sort({ firstName: 1, lastName: -1 })
+.forEach(el => {
+  db.instructorsData.insertOne({
+    FullName: el.firstName + " " + el.lastName,
+    age: el.age
+  });
+});
+
+8-db.instructorsData.findOne({FullName:"mohammed"})
+
+9-db.instructor.deleteOne(
+  {
+    firstName: "ebtesam",
+    courses: { $size: 5 }
+  }
+);
+
+
+
+10-db.instructor.updateOne(
+  { firstName:"laila",courses: "EF"},
+  { $set: { "courses.$": "jquery" } }
+);
+
+
+11-db.instructor.updateOne(
+  { firstName: "noha", lastName: "hesham" },
+  { $push: { courses: "jquery" } }
+);
+
+
+12-db.instructor.updateOne(
+  { firstName: "ahmed", lastName: "mohammed" },
+  { $unset: { courses: "" } }
+);
+
+
+13-db.instructor.updateMany(
+  { courses: { $size: 3 } },   
+  { $inc: { salary: -500 } }    
+);
+
+14-db.instructor.updateMany(
+  {},
+  { $rename: { "address": "fullAddress" } }
+);
+
+
+15-db.instructor.updateOne(
+  { firstName: "noha", lastName: "hesham" },
+  { $set: { "address.street": 20 } }
+);
+
+
+
+
+every:  db.instructor.updateOne(
+  { firstName: "laila" },
+  { $set: { "courses.$[elem]": "jquery" } },
+  { arrayFilters: [ { elem: "EF" } ] }
+);
+
+
+
+
+slice:  db.instructor.find(
+  { firstName: "noha" },
+  { courses: { $slice: 2 } }
+);
+
+
+position: 
+db.instructor.updateOne(
+  { firstName: "noha" },
+  { $push: { courses: {$each:["oop"], $position: 0 } } }
+);
